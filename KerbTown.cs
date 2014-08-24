@@ -55,6 +55,8 @@ namespace Kerbtown
             GameEvents.onGameStateCreated.Add(OnLoad);
 
 			DontDestroyOnLoad(this);
+
+			InvokeRepeating("cacheObjects", 0, 1);
         }
 
         private void OnLoad(Game data)
@@ -641,6 +643,44 @@ namespace Kerbtown
                 _deletePersistence = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
             }
         }
+
+		private void cacheObjects()
+		{
+			Transform playerTransform;
+			if (FlightGlobals.ActiveVessel != null)
+			{
+				playerTransform = FlightGlobals.ActiveVessel.transform;
+			}
+			else
+			{
+				//HACKY: if there is no vessel use the camera, this could cause some issues
+				playerTransform = Camera.main.transform;
+			}
+
+			foreach (String key in _instancedList.Keys.ToArray())
+			{
+				foreach (StaticObject instance in _instancedList[key])
+				{
+					float dist = Vector3.Distance(instance.StaticGameObject.transform.position, playerTransform.position);
+					bool visible = (dist < instance.VisRange);
+					if (visible != instance.StaticGameObject.activeSelf)
+					{
+						instance.StaticGameObject.SetActive(visible);
+						if (visible)
+						{
+							//reposition object
+							instance.Reorientate();
+							//Enable renderers
+							Transform[] gameObjectList = instance.StaticGameObject.GetComponentsInChildren<Transform>();
+							List<GameObject> rendererList =
+								(from t in gameObjectList where t.gameObject.renderer != null select t.gameObject).ToList();
+							foreach (GameObject renObj in rendererList)
+								renObj.renderer.enabled = true;
+						}
+					}
+				}
+			}
+		}
 
 /*
         private static Vector3 GetLocalPosition(CelestialBody celestialObject, double latitude, double longitude)
