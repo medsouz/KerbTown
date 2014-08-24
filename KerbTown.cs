@@ -232,7 +232,7 @@ namespace Kerbtown
             var soModule = ktGameObject.AddComponent<StaticObjectModule>();
 
             // Active the game object.
-            ktGameObject.SetActive(true);
+            ktGameObject.SetActive(false);
 
             // Set objects to layer 15 so that they collide correctly with Kerbals.
             SetLayerRecursively(ktGameObject, 15);
@@ -665,6 +665,7 @@ namespace Kerbtown
 					bool visible = (dist < instance.VisRange);
 					if (visible != instance.StaticGameObject.activeSelf)
 					{
+						Debug.Log("Updating " + instance.NameID + " | Distance:"+dist+" Visible:" + visible);
 						instance.StaticGameObject.SetActive(visible);
 						if (visible)
 						{
