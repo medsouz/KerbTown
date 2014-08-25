@@ -644,44 +644,50 @@ namespace Kerbtown
             }
         }
 
-		private void cacheObjects()
-		{
-			Transform playerTransform;
-			if (FlightGlobals.ActiveVessel != null)
-			{
-				playerTransform = FlightGlobals.ActiveVessel.transform;
-			}
-			else
-			{
-				//HACKY: if there is no vessel use the camera, this could cause some issues
-				playerTransform = Camera.main.transform;
-			}
+        private void cacheObjects()
+        {
+            Transform playerTransform;
+            if (_currentSelectedObject != null)
+            {
+                Debug.Log("Using current selected object");
+                playerTransform = _currentSelectedObject.StaticGameObject.transform;
+            }
+            else if (FlightGlobals.ActiveVessel != null)
+            {
+                Debug.Log("Using active vessel");
+                playerTransform = FlightGlobals.ActiveVessel.transform;
+            }
+            else
+            {
+                //HACKY: if there is no vessel use the camera, this could cause some issues
+                playerTransform = Camera.main.transform;
+            }
 
-			foreach (String key in _instancedList.Keys.ToArray())
-			{
-				foreach (StaticObject instance in _instancedList[key])
-				{
-					float dist = Vector3.Distance(instance.StaticGameObject.transform.position, playerTransform.position);
-					bool visible = (dist < instance.VisRange);
-					if (visible != instance.StaticGameObject.activeSelf)
-					{
-						Debug.Log("Updating " + instance.NameID + " | Distance:"+dist+" Visible:" + visible);
-						instance.StaticGameObject.SetActive(visible);
-						if (visible)
-						{
-							//reposition object
-							instance.Reorientate();
-							//Enable renderers
-							Transform[] gameObjectList = instance.StaticGameObject.GetComponentsInChildren<Transform>();
-							List<GameObject> rendererList =
-								(from t in gameObjectList where t.gameObject.renderer != null select t.gameObject).ToList();
-							foreach (GameObject renObj in rendererList)
-								renObj.renderer.enabled = true;
-						}
-					}
-				}
-			}
-		}
+            foreach (String key in _instancedList.Keys.ToArray())
+            {
+                foreach (StaticObject instance in _instancedList[key])
+                {
+                    float dist = Vector3.Distance(instance.StaticGameObject.transform.position, playerTransform.position);
+                    bool visible = (dist < instance.VisRange);
+                    if (visible != instance.StaticGameObject.activeSelf)
+                    {
+                        Debug.Log("Updating " + instance.NameID + " | Distance:" + dist + " Visible:" + visible);
+                        instance.StaticGameObject.SetActive(visible);
+                        if (visible)
+                        {
+                            //reposition object
+                            instance.Reorientate();
+                            //Enable renderers
+                            Transform[] gameObjectList = instance.StaticGameObject.GetComponentsInChildren<Transform>();
+                            List<GameObject> rendererList =
+                                (from t in gameObjectList where t.gameObject.renderer != null select t.gameObject).ToList();
+                            foreach (GameObject renObj in rendererList)
+                                renObj.renderer.enabled = true;
+                        }
+                    }
+                }
+            }
+        }
 
 /*
         private static Vector3 GetLocalPosition(CelestialBody celestialObject, double latitude, double longitude)
