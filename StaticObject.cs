@@ -37,6 +37,8 @@ namespace Kerbtown
         public GameObject StaticGameObject;
         public float VisRange;
 
+        public bool instancedAtRuntime = false;
+
         private List<Collider> _colliderComponents;
         private List<Renderer> _rendererComponents;
 

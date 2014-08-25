@@ -232,7 +232,7 @@ namespace Kerbtown
             var soModule = ktGameObject.AddComponent<StaticObjectModule>();
 
             // Active the game object.
-            ktGameObject.SetActive(false);
+            ktGameObject.SetActive(stObject.instancedAtRuntime);
 
             // Set objects to layer 15 so that they collide correctly with Kerbals.
             SetLayerRecursively(ktGameObject, 15);

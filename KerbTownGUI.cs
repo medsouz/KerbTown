@@ -608,6 +608,7 @@ namespace Kerbtown
                 _currentCelestialObj = GetCelestialObject(_currentBodyName);
 
                 StaticObject newObject = GetDefaultStaticObject(_currentModelUrl, _currentConfigUrl);
+                newObject.instancedAtRuntime = true;
                 if (_instancedList.ContainsKey(_currentModelUrl))
                 {
                     _instancedList[_currentModelUrl].Add(newObject);
