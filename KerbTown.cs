@@ -649,12 +649,10 @@ namespace Kerbtown
             Transform playerTransform;
             if (_currentSelectedObject != null)
             {
-                Debug.Log("Using current selected object");
                 playerTransform = _currentSelectedObject.StaticGameObject.transform;
             }
             else if (FlightGlobals.ActiveVessel != null)
             {
-                Debug.Log("Using active vessel");
                 playerTransform = FlightGlobals.ActiveVessel.transform;
             }
             else
@@ -668,7 +666,7 @@ namespace Kerbtown
                 foreach (StaticObject instance in _instancedList[key])
                 {
                     float dist = Vector3.Distance(instance.StaticGameObject.transform.position, playerTransform.position);
-                    bool visible = (dist < instance.VisRange);
+                    bool visible = (dist < instance.VisRange) && !HighLogic.LoadedSceneIsEditor;
                     if (visible != instance.StaticGameObject.activeSelf)
                     {
                         Debug.Log("Updating " + instance.NameID + " | Distance:" + dist + " Visible:" + visible);
