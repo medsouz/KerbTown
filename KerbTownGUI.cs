@@ -68,13 +68,8 @@ namespace Kerbtown
 
         private void OnGUI()
         {
-            if (!_mainWindowVisible || HighLogic.LoadedSceneIsFlight == false)
-            {
-                _currentSelectedObject.Manipulate(false);
-                _currentObjectID = "";
-                _currentSelectedObject = null;
+            if (!_mainWindowVisible )
                 return;
-            }
 
             GUI.skin = _mySkin;
 

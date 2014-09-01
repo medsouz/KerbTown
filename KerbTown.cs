@@ -53,11 +53,25 @@ namespace Kerbtown
             GameEvents.onFlightReady.Add(OnFlightReadyCallback);
             GameEvents.onGameStateSaved.Add(OnSave);
             GameEvents.onGameStateCreated.Add(OnLoad);
+			GameEvents.onLevelWasLoaded.Add(OnLevelLoad);
 
 			DontDestroyOnLoad(this);
 
 			InvokeRepeating("cacheObjects", 0, 1);
         }
+
+		private void OnLevelLoad(GameScenes data)
+		{
+			if (data == GameScenes.EDITOR)
+			{
+				if (_currentSelectedObject != null)
+				{
+					_currentSelectedObject.Manipulate(false);
+					_currentObjectID = "";
+					_currentSelectedObject = null;
+				}
+			}
+		}
 
         private void OnLoad(Game data)
         {
@@ -669,7 +683,7 @@ namespace Kerbtown
                     bool visible = (dist < instance.VisRange) && !HighLogic.LoadedSceneIsEditor;
                     if (visible != instance.StaticGameObject.activeSelf)
                     {
-                        Debug.Log("Updating " + instance.NameID + " | Distance:" + dist + " Visible:" + visible);
+                        //Debug.Log("Updating " + instance.NameID + " | Distance:" + dist + " Visible:" + visible);
                         instance.StaticGameObject.SetActive(visible);
                         if (visible)
                         {
